@@ -23,7 +23,6 @@ async def help_kb(msg: Message):
 async def profile_kb(msg: Message):
     unique_id = str(random.randint(10000, 9999999999))
     user_button[unique_id] = str(msg.from_user.id)
-    print(user_button)
     builder = InlineKeyboardBuilder()
     button_1 = types.InlineKeyboardButton(text="🃏 Мои карточки", callback_data=f'show_cards_{unique_id}')
     button_2 = types.InlineKeyboardButton(text="🀄️ Топ карточек", callback_data=f'top_komaru_{unique_id}')
@@ -42,7 +41,6 @@ async def cards_kb(rarities):
 
 async def get_card_navigation_keyboard(user_id, card_index, rarity, rarity_cards, card_id):
     builder = InlineKeyboardBuilder()
-    print(card_index)
     love_button = types.InlineKeyboardButton(text="❤️", callback_data=f'love_{user_id[:15]}_{card_id}')
     builder.add(love_button)
 
