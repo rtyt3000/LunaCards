@@ -1,0 +1,10 @@
+{
+  "service_bot_api_key": "7409912773:AAGLCpIH6TyjhrQzNSedFo7e6USf1RFXF5w",
+  "tech_bot_api_key": "",
+  "main_bot_direction": "main.py",
+  "tech_bot_direction": "tech.py",
+  "commands": ["комару", "получить карту", "камар", "камару", "/profile", "профиль", "комару профиль", "камару профиль", "комару профиль", "/start", "/start@komarucardsbot", "/help", "/help@komarucardsbot"],
+  "startwith_commands": ["сменить ник", "промо", "/admin_panel"],
+  "tech_text": "Бот на тех перерыве, повторите попытку позже",
+  "allowed_users": [6184515646, 1130692453, 1268026433]
+}
