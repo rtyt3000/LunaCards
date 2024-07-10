@@ -34,7 +34,7 @@ async def setup_router(dp, bot):
         markup = await help_kb(msg)
         await msg.answer(HELP_MESSAGE, reply_markup=markup, parse_mode='HTML')
 
-    @router.message(F.text.in_(["комару", "камар", "камару", "получить карту"]))
+    @router.message(F.text.casefold().in_(["комару".casefold(), "камар".casefold(), "камару".casefold(), "получить карту".casefold()]))
     async def komaru_cards_function(msg: Message):
         if not await last_time_usage(msg.from_user.id):
             return
@@ -106,7 +106,7 @@ async def setup_router(dp, bot):
             data[user_id] = user_data
             await save_data(data)
 
-    @router.message(F.text.in_(["кпрофиль", "профиль", "комару профиль", "камара профиль"]) | F.command("profile"))
+    @router.message(F.text.casefold().in_(["кпрофиль".casefold(), "профиль".casefold(), "комару профиль".casefold(), "камара профиль".casefold()]) | F.command("profile"))
     async def user_profile(msg: Message):
         if not await last_time_usage(msg.from_user.id):
             return
@@ -159,7 +159,7 @@ async def setup_router(dp, bot):
                 await msg.answer(
                     "Произошла ошибка при доступе к вашему профилю. Попробуйте позже.")
 
-    @router.message(F.text.startswith("сменить ник"))
+    @router.message(F.text.casefold().startswith("сменить ник".casefold()))
     async def change_nickname(message: types.Message):
         if not await last_time_usage(message.from_user.id):
             return
@@ -169,7 +169,7 @@ async def setup_router(dp, bot):
         premium_status, _ = await check_and_update_premium_status(str(user_id))
         user_data = data.get(str(user_id),
                              {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': first_name, 'card_count': 0})
-        parts = message.text.split('сменить ник', 1)
+        parts = message.text.casefold().split('сменить ник'.casefold(), 1)
 
         if len(parts) > 1 and parts[1].strip():
             new_nick = parts[1].strip()
@@ -197,7 +197,7 @@ async def setup_router(dp, bot):
         else:
             await message.reply("Никнейм не может быть пустым. Укажите значение после команды.")
 
-    @router.message(F.text.startswith("промо "))
+    @router.message(F.text.casefold().startswith("промо ".casefold()))
     async def promo(message):
         if not await last_time_usage(message.from_user.id):
             return
