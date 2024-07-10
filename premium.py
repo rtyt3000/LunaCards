@@ -12,7 +12,7 @@ from kb import premium_keyboard, payment_keyboard, payment_crypto_keyboard
 from text import responses, PREMIUM_TEXT
 from aiocryptopay import AioCryptoPay, Networks
 
-crypto = AioCryptoPay(token=config.AIO_TOKEN, network=Networks.TEST_NET)
+crypto = AioCryptoPay(token=config.AIO_TOKEN, network=Networks.MAIN_NET)
 
 
 async def check_and_update_premium_status(user_id):
