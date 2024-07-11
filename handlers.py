@@ -38,7 +38,8 @@ async def setup_router(dp, bot):
     async def privacy_handler(msg: Message):
         if not await last_time_usage(msg.from_user.id):
             return
-        await msg.answer(PRIVACY_MESSAGE)
+        markup = await help_kb(msg)
+        await msg.answer(PRIVACY_MESSAGE, reply_markup=markup)
 
     @router.message(F.text.casefold().in_(["комару".casefold(), "камар".casefold(), "камару".casefold(), "получить карту".casefold()]))
     async def komaru_cards_function(msg: Message):
