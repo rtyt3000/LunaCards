@@ -14,11 +14,13 @@ for filename in ["premium_users.json", "komaru_user_cards.json"]:
         with open(filename, 'w') as f:
             json.dump({}, f)
 
+
 async def config_func():
     async with config_lock:
         async with aiofiles.open('config.json', 'r', encoding='utf-8') as file:
             data = json.loads(await file.read())
         return data
+
 
 async def save_data(data):
     async with data_lock:
@@ -29,6 +31,7 @@ async def save_data(data):
         except Exception as e:
             logging.error(f"Failed to save data: {e}")
 
+
 async def load_data_cards():
     async with data_lock:
         try:
@@ -37,6 +40,7 @@ async def load_data_cards():
         except Exception as e:
             logging.error(f"Failed to load data: {e}")
             return {}
+
 
 async def register_user_and_group_async(message):
     chat_type = message.chat.type
@@ -77,11 +81,13 @@ async def register_user_and_group_async(message):
             async with aiofiles.open("user_group_data.json", "w") as file:
                 await file.write(json.dumps(data, indent=4))
 
+
 async def read_promo_data(filename):
     async with promo_lock:
         async with aiofiles.open(filename, 'r') as f:
             data = await f.read()
             return json.loads(data)
+
 
 async def write_promo_data(filename, data):
     async with promo_lock:
