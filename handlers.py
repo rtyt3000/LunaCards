@@ -25,7 +25,7 @@ async def setup_router(dp, bot):
             markup = await start_kb(msg)
             await msg.answer(WELCOME_MESSAGE_PRIVATE, reply_markup=markup, parse_mode='HTML')
         else:
-            await msg.answer(WELCOME_MESSAGE)
+            await msg.answer(WELCOME_MESSAGE, parse_mode='HTML')
 
     @router.message(Command("help"))
     async def help_handler(msg: Message):
@@ -33,6 +33,12 @@ async def setup_router(dp, bot):
             return
         markup = await help_kb(msg)
         await msg.answer(HELP_MESSAGE, reply_markup=markup, parse_mode='HTML')
+
+    @router.message(Command("privacy"))
+    async def privacy_handler(msg: Message):
+        if not await last_time_usage(msg.from_user.id):
+            return
+        await msg.answer(PRIVACY_MESSAGE)
 
     @router.message(F.text.casefold().in_(["комару".casefold(), "камар".casefold(), "камару".casefold(), "получить карту".casefold()]))
     async def komaru_cards_function(msg: Message):
