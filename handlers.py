@@ -4,7 +4,7 @@ import time
 from aiogram import types, F, Router
 from aiogram.types import Message, InputMediaPhoto
 from aiogram.filters import Command
-from text import WELCOME_MESSAGE_PRIVATE, WELCOME_MESSAGE, HELP_MESSAGE, responses
+from text import WELCOME_MESSAGE_PRIVATE, WELCOME_MESSAGE, HELP_MESSAGE, responses, PRIVACY_MESSAGE
 from kb import start_kb, help_kb, profile_kb, cards_kb, get_card_navigation_keyboard, top_kb, subcribe_keyboard
 from premium import check_and_update_premium_status, activate_premium
 from db import save_data, load_data_cards, register_user_and_group_async, config_func, read_promo_data, write_promo_data
