@@ -5,7 +5,7 @@ import os
 
 import aiofiles
 from aiogram import F
-from aiogram.types import InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, InputFile, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from premium import activate_premium
 from datetime import datetime
@@ -126,8 +126,7 @@ async def setup_router_admin(dp, bot):
                 for user_id in receivers:
                     for file_path in file_paths:
                         if os.path.exists(file_path):
-                            with open(file_path, 'rb') as file:
-                                await bot.send_document(user_id, file)
+                            await bot.send_document(user_id, FSInputFile(file_path))
                     users = count_elements_in_json("komaru_user_cards.json")
                     await bot.send_message(user_id,
                                            f"Резервная копия: {current_date}\nКоличество пользователей: {users}")
