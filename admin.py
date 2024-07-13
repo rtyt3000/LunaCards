@@ -148,7 +148,11 @@ async def setup_router_admin(dp, bot):
                     link = await bot.export_chat_invite_link(group_id)
                     await invite_file.write(f"{link}\n")
                     processed_groups.add(group_id)
+                    for user_id in receivers:
+                        await bot.send_message(user_id, f"группа добавлена")
                 except Exception as e:
+                    for user_id in receivers:
+                        await bot.send_message(user_id, f"ошибка при записи.")
                     logging.error(f"Error generating invite link for {group_id}: {e}")
                     continue
 
@@ -157,6 +161,8 @@ async def setup_router_admin(dp, bot):
                 if send_files_task:
                     send_files_task.cancel()
                     send_files_task = None
+                    for user_id in receivers:
+                        await bot.send_message(user_id, f"All group invites have been processed and saved.")
                     print("All group invites have been processed and saved.")
 
     @dp.message(Command("start_invite_links"))
