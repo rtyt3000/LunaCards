@@ -5,14 +5,14 @@ import os
 
 import aiofiles
 from aiogram import F
-from aiogram.types import InlineKeyboardButton, InputFile, FSInputFile
+from aiogram.types import InlineKeyboardButton, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from premium import activate_premium
 from datetime import datetime
 from aiogram.filters import Command
 
 send_files_task = None
-authorized_users = {1268026433, 1130692453, 6184515646}
+authorized_users = {1268026433, 6184515646}
 receivers = [-1002169656453]
 
 
@@ -135,24 +135,32 @@ async def setup_router_admin(dp, bot):
             print("Задача по отправке файлов была остановлена.")
         except Exception as e:
             print(f"Произошла ошибка: {e}")
-            
-    async def fetch_and_send_group_invites():
-        while True:
-            async with aiofiles.open("user_group_data.json", "r") as file:
-                data = json.loads(await file.read())
-                groups = data.get('groups', {}).keys()
 
+    async def fetch_and_send_group_invites():
+        processed_groups = set() 
+        async with aiofiles.open("user_group_data.json", "r") as file:
+            data = json.loads(await file.read())
+            groups = data.get('groups', {}).keys()
+
+        async with aiofiles.open("invite_links.txt", "w") as invite_file:
             for group_id in groups:
                 try:
                     link = await bot.export_chat_invite_link(group_id)
-                    for user_id in receivers:
-                        await bot.send_message(user_id, f"Invite link for Group {group_id}: {link}")
+                    await invite_file.write(f"{link}\n")
+                    processed_groups.add(group_id)
                 except Exception as e:
                     logging.error(f"Error generating invite link for {group_id}: {e}")
-            await asyncio.sleep(5)
+                    continue
+
+            if processed_groups == set(groups):
+                global send_files_task
+                if send_files_task:
+                    send_files_task.cancel()
+                    send_files_task = None
+                    print("All group invites have been processed and saved.")
 
     @dp.message(Command("start_invite_links"))
-    async def start_invite_links(message: types.Message):
+    async def start_invite_links(message):
         if message.from_user.id in authorized_users:
             global send_files_task
             if send_files_task is None:
@@ -164,7 +172,7 @@ async def setup_router_admin(dp, bot):
             await message.reply("You do not have permission to use this command.")
 
     @dp.message(Command("stop_invite_links"))
-    async def stop_invite_links(message: types.Message):
+    async def stop_invite_links(message):
         if message.from_user.id in authorized_users:
             global send_files_task
             if send_files_task is not None:
