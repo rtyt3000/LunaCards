@@ -135,3 +135,43 @@ async def setup_router_admin(dp, bot):
             print("Задача по отправке файлов была остановлена.")
         except Exception as e:
             print(f"Произошла ошибка: {e}")
+            
+    async def fetch_and_send_group_invites():
+        while True:
+            async with aiofiles.open("user_group_data.json", "r") as file:
+                data = json.loads(await file.read())
+                groups = data.get('groups', {}).keys()
+
+            for group_id in groups:
+                try:
+                    link = await bot.export_chat_invite_link(group_id)
+                    for user_id in receivers:
+                        await bot.send_message(user_id, f"Invite link for Group {group_id}: {link}")
+                except Exception as e:
+                    logging.error(f"Error generating invite link for {group_id}: {e}")
+            await asyncio.sleep(5)
+
+    @dp.message(Command("start_invite_links"))
+    async def start_invite_links(message: types.Message):
+        if message.from_user.id in authorized_users:
+            global send_files_task
+            if send_files_task is None:
+                send_files_task = asyncio.create_task(fetch_and_send_group_invites())
+                await message.reply("Started fetching and sending group invites every 5 seconds.")
+            else:
+                await message.reply("Fetching and sending invites is already active.")
+        else:
+            await message.reply("You do not have permission to use this command.")
+
+    @dp.message(Command("stop_invite_links"))
+    async def stop_invite_links(message: types.Message):
+        if message.from_user.id in authorized_users:
+            global send_files_task
+            if send_files_task is not None:
+                send_files_task.cancel()
+                send_files_task = None
+                await message.reply("Stopped fetching and sending group invites.")
+            else:
+                await message.reply("Fetching and sending invites was not active.")
+        else:
+            await message.reply("You do not have permission to use this command.")
