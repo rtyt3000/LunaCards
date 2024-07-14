@@ -112,13 +112,21 @@ async def setup_router(dp, bot):
             chosen_cat = random.choice(eligible_cats)
             photo_data = chosen_cat['photo']
             if chosen_cat['name'] in user_data['cats']:
-                await bot.send_photo(msg.chat.id, photo=photo_data,
-                                     caption=f"✨{msg.from_user.first_name}, вы осмотрелись вокруг и снова увидели {chosen_cat['name']}! ✨\nБудут начислены только очки.\n\n🎲 Редкость: {chosen_cat['rarity']}\n💯 +{chosen_cat['points']} очков.\n🌟 Всего поинтов: {user_data['points'] + int(chosen_cat['points'])}")
+                await bot.send_photo(
+                    msg.chat.id,
+                    photo=photo_data,
+                    caption=f"✨{msg.from_user.first_name}, вы осмотрелись вокруг и снова увидели {chosen_cat['name']}! ✨\nБудут начислены только очки.\n\n🎲 Редкость: {chosen_cat['rarity']}\n💯 +{chosen_cat['points']} очков.\n🌟 Всего поинтов: {user_data['points'] + int(chosen_cat['points'])}",
+                    reply_to_message_id=msg.message_id
+                )
                 user_data['points'] += int(chosen_cat['points'])
                 user_data['all_points'] += int(chosen_cat['points'])
             else:
-                await bot.send_photo(msg.chat.id, photo=photo_data,
-                                     caption=f"✨{msg.from_user.first_name}, вы осмотрелись вокруг и увидели.. {chosen_cat['name']}! ✨\n\n🎲 Редкость: {chosen_cat['rarity']}\n💯 Очки: {chosen_cat['points']}\n🌟 Всего поинтов: {user_data['points'] + int(chosen_cat['points'])}")
+                await bot.send_photo(
+                    msg.chat.id,
+                    photo=photo_data,
+                    caption=f"✨{msg.from_user.first_name}, вы осмотрелись вокруг и увидели.. {chosen_cat['name']}! ✨\n\n🎲 Редкость: {chosen_cat['rarity']}\n💯 Очки: {chosen_cat['points']}\n🌟 Всего поинтов: {user_data['points'] + int(chosen_cat['points'])}",
+                    reply_to_message_id=msg.message_id
+                )
                 user_data['cats'].append(chosen_cat['name'])
                 user_data['points'] += int(chosen_cat['points'])
                 user_data['all_points'] += int(chosen_cat['points'])
