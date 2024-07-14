@@ -73,9 +73,23 @@ async def setup_router(dp, bot):
             remaining_hours = int(remaining_time // 3600)
             remaining_minutes = int((remaining_time % 3600) // 60)
             remaining_seconds = int(remaining_time % 60)
+        
+            time_parts = []
+            if remaining_hours > 0:
+                time_parts.append(f"{remaining_hours} часов")
+            if remaining_minutes > 0:
+                time_parts.append(f"{remaining_minutes} минут")
+            if remaining_seconds > 0:
+                time_parts.append(f"{remaining_seconds} секунд")
+        
+            time_string = " ".join(time_parts)
+            if not time_string:
+                time_string = "меньше минуты"
+        
             await msg.reply(
-                f"{msg.from_user.first_name}, вы осмотрелись, но не увидели рядом Комару. Попробуйте еще раз через {remaining_hours} часов {remaining_minutes} минут {remaining_seconds} секунд.")
+                f"{msg.from_user.first_name}, вы осмотрелись, но не увидели рядом Комару. Попробуйте еще раз через {time_string}.")
             return
+
 
         random_number = random.randint(1, 95)
         if premium_status:
