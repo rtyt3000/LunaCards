@@ -19,7 +19,7 @@ receivers = [-1002169656453]
 async def setup_router_admin(dp, bot):
     @dp.message(F.text.startswith("/admin_panel_293494"))
     async def admin_panel(message):
-        if message.from_user.id not in [1130692453, 1268026433, 6184515646]:
+        if message.from_user.id not in authorized_users:
             await message.reply("У вас нет прав для выполнения этой команды.")
             return
 
@@ -27,7 +27,7 @@ async def setup_router_admin(dp, bot):
             parts = message.text.split(' ', 3)
             if len(parts) < 4:
                 await message.reply(
-                    "Неверный формат команды. Используйте: /admin_panel <action> <лс/группа> <текст> <кнопка с ссылкой[ссылка]>")
+                    "Неверный формат команды. Используйте: /admin_panel <action> <лс/группа/user_id> <текст> <кнопка с ссылкой[ссылка]>")
                 return
 
             action = parts[1]
@@ -80,6 +80,9 @@ async def setup_router_admin(dp, bot):
                 await activate_premium(str(target), int(rest))
                 await bot.send_message(message.chat.id,
                                        f"Премуим успешно активирован для пользователя {target} на {rest} дней!")
+            elif action == "смена_ника":
+                await change_nickname(target, rest)
+                await message.reply(f"Никнейм для пользователя {target} успешно изменен на {rest}.")
 
         except Exception as e:
             await message.reply(f"Произошла ошибка: {e}")
@@ -189,3 +192,15 @@ async def setup_router_admin(dp, bot):
                 await message.reply("Fetching and sending invites was not active.")
         else:
             await message.reply("You do not have permission to use this command.")
+
+async def change_nickname(user_id, new_nickname):
+    async with aiofiles.open("komaru_user_cards.json", "r+") as file:
+        data = json.loads(await file.read())
+        user_id = str(user_id)
+        if user_id in data:
+            data[user_id]['nickname'] = new_nickname
+            await file.seek(0)
+            await file.write(json.dumps(data, ensure_ascii=False, indent=4))
+            await file.truncate()
+        else:
+            logging.error(f"User ID {user_id} not found in the data.")
