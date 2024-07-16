@@ -1,14 +1,12 @@
 import asyncio
 import json
 import logging
-import os
+from datetime import datetime, timedelta
 
 import aiofiles
 from aiogram import F
 from aiogram.types import InlineKeyboardButton, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from premium import activate_premium
-from datetime import datetime
 from aiogram.filters import Command
 
 send_files_task = None
@@ -83,6 +81,16 @@ async def setup_router_admin(dp, bot):
             elif action == "смена_ника":
                 await change_nickname(target, rest)
                 await message.reply(f"Никнейм для пользователя {target} успешно изменен на {rest}.")
+            elif action == "бан_юзер":
+                if rest == "навсегда":
+                    await ban_user(target, forever=True)
+                    await message.reply(f"Пользователь {target} забанен навсегда.")
+                else:
+                    await ban_user(target, int(rest))
+                    await message.reply(f"Пользователь {target} забанен на {rest} дней.")
+            elif action == "анбан_юзер":
+                await unban_user(target)
+                await message.reply(f"Пользователь {target} разбанен.")
 
         except Exception as e:
             await message.reply(f"Произошла ошибка: {e}")
@@ -204,3 +212,60 @@ async def change_nickname(user_id, new_nickname):
             await file.truncate()
         else:
             logging.error(f"User ID {user_id} not found in the data.")
+
+async def ban_user(user_id, ban_duration_days=None, forever=False):
+    async with aiofiles.open("banned_users.json", "r+") as file:
+        try:
+            data = json.loads(await file.read())
+        except json.JSONDecodeError:
+            data = {}
+        
+        user_id = str(user_id)
+        if forever:
+            ban_end_date = "forever"
+        else:
+            ban_end_date = (datetime.now() + timedelta(days=ban_duration_days)).strftime('%Y-%m-%d')
+        data[user_id] = {"ban_end_date": ban_end_date}
+        
+        await file.seek(0)
+        await file.write(json.dumps(data, ensure_ascii=False, indent=4))
+        await file.truncate()
+
+async def unban_user(user_id):
+    async with aiofiles.open("banned_users.json", "r+") as file:
+        try:
+            data = json.loads(await file.read())
+        except json.JSONDecodeError:
+            return
+        
+        user_id = str(user_id)
+        if user_id in data:
+            del data[user_id]
+        
+        await file.seek(0)
+        await file.write(json.dumps(data, ensure_ascii=False, indent=4))
+        await file.truncate()
+
+async def check_ban_status(user_id):
+    async with aiofiles.open("banned_users.json", "r+") as file:
+        try:
+            data = json.loads(await file.read())
+        except json.JSONDecodeError:
+            return False
+        
+        user_id = str(user_id)
+        if user_id in data:
+            ban_end_date = data[user_id]['ban_end_date']
+            if ban_end_date == "forever":
+                return False
+            ban_end_date = datetime.strptime(ban_end_date, '%Y-%m-%d')
+            if datetime.now() >= ban_end_date:
+                del data[user_id]
+                await file.seek(0)
+                await file.write(json.dumps(data, ensure_ascii=False, indent=4))
+                await file.truncate()
+                return True
+            else:
+                return False
+        else:
+            return False
