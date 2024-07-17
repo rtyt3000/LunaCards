@@ -8,6 +8,7 @@ from aiogram import F
 from aiogram.types import InlineKeyboardButton, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.filters import Command
+from premium import activate_premium
 
 send_files_task = None
 authorized_users = {1268026433, 6184515646}
