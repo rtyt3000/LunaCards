@@ -17,6 +17,8 @@ async def get_titul(card_count, user_id):
         return "Создатель"
     elif user_id in [1497833411, 6679727618, 5872877426]:
         return "Лох"
+    elif user_id == 5493956779:
+        return "люпими квт рофл"
     elif user_id == 6678042511:
         return "вирус"
     elif user_id == 1829798663:
