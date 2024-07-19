@@ -8,7 +8,7 @@ from text import WELCOME_MESSAGE_PRIVATE, WELCOME_MESSAGE, HELP_MESSAGE, respons
 from kb import start_kb, help_kb, profile_kb, cards_kb, get_card_navigation_keyboard, top_kb, subcribe_keyboard
 from premium import check_and_update_premium_status, activate_premium
 from db import save_data, load_data_cards, register_user_and_group_async, config_func, read_promo_data, write_promo_data
-from states import get_titul, user_button, last_time_usage
+from states import get_titul, user_button, last_time_usage, get_dev_titul
 from premium import send_payment_method_selection
 import emoji
 import re
@@ -155,20 +155,26 @@ async def setup_router(dp, bot):
         cats = config_data['cats']
         collected_cards = len(user_data['cats'])
         total_cards = len(cats)
-
+    
         premium_status, premium_expiration = await check_and_update_premium_status(user_id)
         premium_message = f"Премиум: активен до {premium_expiration}" if premium_status else "Премиум: не активен"
-
+    
+        if user_id in [1234567890, 0987654321]:
+            dev_titul = await get_dev_titul(user_id)
+            dev_titul_message = f"🪬 Dev Титул: {dev_titul}"
+        else:
+            dev_titul_message = ""
+    
         try:
             user_profile_photos = await bot.get_user_profile_photos(user_id, limit=1)
             if user_profile_photos.photos:
                 photo = user_profile_photos.photos[0][-1]
                 file_id = photo.file_id
-
+    
                 photo_cache = file_id
             else:
                 photo_cache = 'https://tinypic.host/images/2024/07/08/avatar.jpg'
-
+    
             caption = (
                 f"Привет {user_data['nickname']}!\n\n"
                 f"🏡 Твой профиль:\n"
@@ -176,10 +182,11 @@ async def setup_router(dp, bot):
                 f"💰 Очки: {user_data['points']}\n"
                 f"🎖️ Титул: {titul}\n"
                 f"💖 Любимая карточка: {favorite_card}\n"
-                f"🌟 {premium_message}"
+                f"🌟 {premium_message}\n"
+                f"{dev_titul_message}\n"
             )
             markup = await profile_kb(msg)
-
+    
             await bot.send_photo(msg.chat.id, photo=photo_cache, caption=caption, reply_markup=markup)
         except Exception as e:
             if "bot was blocked by the user" in str(e):
