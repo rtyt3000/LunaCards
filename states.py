@@ -11,6 +11,7 @@ async def last_time_usage(user_id):
     last_request_time[user_id] = current_time
     return True
 
+
 async def get_dev_titul(user_id: int) -> str:
     if user_id == 5493956779:
         return "люпими квт рофл"
@@ -20,8 +21,8 @@ async def get_dev_titul(user_id: int) -> str:
         return "как ты вообще сюда попал?"
 
 
-async def get_titul(card_count, user_id):
-    elif card_count > 500:
+async def get_titul(card_count):
+    if card_count > 500:
         return "Мастер карточек"
     elif card_count > 250:
         return "Коллекционер"
