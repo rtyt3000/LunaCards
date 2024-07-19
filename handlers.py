@@ -183,11 +183,11 @@ async def setup_router(dp, bot):
                 f"🎖️ Титул: {titul}\n"
                 f"💖 Любимая карточка: {favorite_card}\n"
                 f"🌟 {premium_message}\n"
-                f"{dev_titul_message}\n"
+                f"<blockquote> {dev_titul_message} </blockquote>\n"
             )
             markup = await profile_kb(msg)
     
-            await bot.send_photo(msg.chat.id, photo=photo_cache, caption=caption, reply_markup=markup)
+            await bot.send_photo(msg.chat.id, photo=photo_cache, caption=caption, reply_markup=markup, parse_mode="HTML")
         except Exception as e:
             if "bot was blocked by the user" in str(e):
                 await msg.answer("Пожалуйста, разблокируйте бота для доступа к вашему профилю.")
