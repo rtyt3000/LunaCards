@@ -149,7 +149,7 @@ async def setup_router(dp, bot):
                              {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': first_name, 'card_count': 0})
         card_count = user_data.get('card_count', 0)
         favorite_card = user_data.get('love_card', 'Не выбрана')
-        titul = await get_titul(card_count, user_id)
+        titul = await get_titul(card_count)
         await register_user_and_group_async(msg)
         config_data = await config_func()
         cats = config_data['cats']
