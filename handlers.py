@@ -159,7 +159,7 @@ async def setup_router(dp, bot):
         premium_status, premium_expiration = await check_and_update_premium_status(user_id)
         premium_message = f"Премиум: активен до {premium_expiration}" if premium_status else "Премиум: не активен"
     
-        if user_id in [1234567890, 0987654321]:
+        if user_id in [6184515646, 1268026433, 5493956779]:
             dev_titul = await get_dev_titul(user_id)
             dev_titul_message = f"🪬 Dev Титул: {dev_titul}"
         else:
