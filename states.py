@@ -15,7 +15,7 @@ async def last_time_usage(user_id):
 async def get_dev_titul(user_id: int) -> str:
     if user_id == 5493956779:
         return "люпими квт рофл"
-    elif user_id == "1022923020":
+    elif user_id == 1022923020:
         return "@NAIX_EXE НУ ЧЕ ТАМ? BY @DERADERADERA."
     elif user_id in [1268026433, 6184515646]:
         return "Создатель"
