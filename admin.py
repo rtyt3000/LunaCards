@@ -122,10 +122,21 @@ async def setup_router_admin(dp, bot):
         else:
             await message.reply("У вас нет доступа к этой команде.")
 
-    def count_elements_in_json(file_path):
+    async def count_users_and_groups(file_path: str):
+        async with aiofiles.open(file_path, 'r', encoding='utf-8') as file:
+            contents = await file.read()
+            data = json.loads(contents)
+    
+        num_users = len(data['users'])
+        num_groups = len(data['groups'])
+    
+        return f"Количество лс: {num_users}\nКоличество групп: {num_groups}"
+
+    async def count_elements_in_json(file_path: str):
         try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                data = json.load(file)
+            async with aiofiles.open(file_path, 'r', encoding='utf-8') as file:
+                contents = await file.read()
+                data = json.loads(contents)
                 return len(data)
         except Exception as e:
             print(f"Произошла ошибка: {e}")
@@ -140,9 +151,10 @@ async def setup_router_admin(dp, bot):
                     for file_path in file_paths:
                         if os.path.exists(file_path):
                             await bot.send_document(user_id, FSInputFile(file_path))
-                    users = count_elements_in_json("komaru_user_cards.json")
+                    users = await count_elements_in_json("komaru_user_cards.json")
+                    users_ang_groups = await count_users_and_groups("user_group_data.json")
                     await bot.send_message(user_id,
-                                           f"Резервная копия: {current_date}\nКоличество пользователей: {users}")
+                                           f"Резервная копия: {current_date}\nКоличество пользователей: {users}\n{users_ang_groups}")
                 await asyncio.sleep(600)
         except asyncio.CancelledError:
             print("Задача по отправке файлов была остановлена.")
