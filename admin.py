@@ -151,6 +151,8 @@ async def setup_router_admin(dp, bot):
                     for file_path in file_paths:
                         if os.path.exists(file_path):
                             await bot.send_document(user_id, FSInputFile(file_path))
+                        else:
+                            logging.error(f"File not found: {file_path}")
                     users = await count_elements_in_json("komaru_user_cards.json")
                     users_ang_groups = await count_users_and_groups("user_group_data.json")
                     await bot.send_message(user_id,
