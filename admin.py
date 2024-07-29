@@ -16,6 +16,26 @@ authorized_users = {1268026433, 6184515646}
 receivers = [-1002169656453]
 
 
+async def collect_season_data(message):
+    try:
+        async with aiofiles.open("komaru_user_cards.json", "r+") as file:
+            data = json.loads(await file.read())
+
+            for user_id, user_data in data.items():
+                user_data['cats'] = []
+                user_data['last_usage'] = 1
+                user_data['points'] = 0
+
+            await file.seek(0)
+            await file.write(json.dumps(data, ensure_ascii=False, indent=4))
+            await file.truncate()
+
+        await message.reply("Данные сезона успешно собраны и обновлены.")
+    except Exception as e:
+        logging.error(f"Ошибка при сборе данных сезона: {e}")
+        await message.reply(f"Произошла ошибка при сборе данных сезона: {e}")
+
+
 async def setup_router_admin(dp, bot):
     @dp.message(F.text.startswith("/admin_panel_293494"))
     async def admin_panel(message):
@@ -93,6 +113,15 @@ async def setup_router_admin(dp, bot):
             elif action == "анбан_юзер":
                 await unban_user(target)
                 await message.reply(f"Пользователь {target} разбанен.")
+            elif action == "сброс":
+                target = parts[2]
+                password = parts[3]
+                if target == "сезона":
+                    if password == "sfduygshfihdiufgishdhif":
+                        await collect_season_data(message)
+                        await message.reply("Сезон обнулен")
+                else:
+                    await message.reply("Неверный поддействие команды. Используйте: сезона Siberia100")
 
         except Exception as e:
             await message.reply(f"Произошла ошибка: {e}")
