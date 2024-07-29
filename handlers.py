@@ -12,6 +12,7 @@ from states import get_titul, user_button, last_time_usage, get_dev_titul
 from premium import send_payment_method_selection
 import emoji
 import re
+from aiogram import html
 
 router = Router()
 
@@ -176,7 +177,7 @@ async def setup_router(dp, bot):
                 photo_cache = 'https://tinypic.host/images/2024/07/08/avatar.jpg'
     
             caption = (
-                f"Привет {user_data['nickname']}!\n\n"
+                f"Привет {html.bold(html.quote(user_data['nickname']))}!\n\n"
                 f"🏡 Твой профиль:\n"
                 f"🃏 Собрано {collected_cards} из {total_cards} карточек\n"
                 f"💰 Очки: {user_data['points']}\n"
