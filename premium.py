@@ -91,7 +91,7 @@ async def start_dp(dp, bot):
     @dp.callback_query(F.data.startswith("pay_crypto_"))
     async def create_and_send_invoice(callback):
         try:
-            invoice = await crypto.create_invoice(asset='USDT', amount=0.5)
+            invoice = await crypto.create_invoice(asset='USDT', amount=0.7)
             if not invoice:
                 response = "Ошибка при создании инвойса. Попробуйте позже."
                 await bot.send_message(callback.from_user.id, response)
