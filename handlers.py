@@ -43,7 +43,9 @@ async def setup_router(dp, bot):
         markup = await help_kb(msg)
         await msg.answer(PRIVACY_MESSAGE, reply_markup=markup)
 
-    @router.message(F.text.casefold().in_(["комару".casefold(), "карту, сэр".casefold(), "карту сэр".casefold(), "карту, сэр.".casefold(), "камар".casefold(), "камару".casefold(), "получить карту".casefold()]))
+    @router.message(F.text.casefold().in_(
+        ["комару".casefold(), "карту, сэр".casefold(), "карту сэр".casefold(), "карту, сэр.".casefold(),
+         "камар".casefold(), "камару".casefold(), "получить карту".casefold()]))
     async def komaru_cards_function(msg: Message):
         if not await last_time_usage(msg.from_user.id):
             return
@@ -75,7 +77,7 @@ async def setup_router(dp, bot):
             remaining_hours = int(remaining_time // 3600)
             remaining_minutes = int((remaining_time % 3600) // 60)
             remaining_seconds = int(remaining_time % 60)
-        
+
             time_parts = []
             if remaining_hours > 0:
                 time_parts.append(f"{remaining_hours} часов")
@@ -83,11 +85,11 @@ async def setup_router(dp, bot):
                 time_parts.append(f"{remaining_minutes} минут")
             if remaining_seconds > 0:
                 time_parts.append(f"{remaining_seconds} секунд")
-        
+
             time_string = " ".join(time_parts)
             if not time_string:
                 time_string = "меньше минуты"
-        
+
             await msg.reply(
                 f"{msg.from_user.first_name}, вы осмотрелись, но не увидели рядом Комару. Попробуйте еще раз через {time_string}.")
             return
@@ -102,7 +104,7 @@ async def setup_router(dp, bot):
             if 0 <= random_number <= 14:
                 eligible_cats = [cat for cat in cats if cat["rarity"] == "Легендарная"]
             elif 15 <= random_number <= 29:
-                eligible_cats = [cat for cat in cats если cat["rarity"] == "Мифическая"]
+                eligible_cats = [cat for cat in cats if cat["rarity"] == "Мифическая"]
 
         if 30 <= random_number <= 49:
             eligible_cats = [cat for cat in cats if cat["rarity"] == "Сверхредкая"]
@@ -135,8 +137,6 @@ async def setup_router(dp, bot):
             user_data['last_usage'] = time.time()
             data[user_id] = user_data
 
-            await write_event.wait()
-            write_event.clear()
             await save_data(data)
 
     @router.message(F.text.casefold().in_(["кпрофиль".casefold(), "профиль".casefold(), "комару профиль".casefold(), "камара профиль".casefold()]) | F.command("profile"))
