@@ -92,7 +92,6 @@ async def setup_router(dp, bot):
                 f"{msg.from_user.first_name}, вы осмотрелись, но не увидели рядом Комару. Попробуйте еще раз через {time_string}.")
             return
 
-
         random_number = random.randint(1, 95)
         if premium_status:
             if 0 <= random_number <= 19:
@@ -103,7 +102,7 @@ async def setup_router(dp, bot):
             if 0 <= random_number <= 14:
                 eligible_cats = [cat for cat in cats if cat["rarity"] == "Легендарная"]
             elif 15 <= random_number <= 29:
-                eligible_cats = [cat for cat in cats if cat["rarity"] == "Мифическая"]
+                eligible_cats = [cat for cat in cats если cat["rarity"] == "Мифическая"]
 
         if 30 <= random_number <= 49:
             eligible_cats = [cat for cat in cats if cat["rarity"] == "Сверхредкая"]
@@ -135,6 +134,9 @@ async def setup_router(dp, bot):
                 user_data['card_count'] += 1
             user_data['last_usage'] = time.time()
             data[user_id] = user_data
+
+            await write_event.wait()
+            write_event.clear()
             await save_data(data)
 
     @router.message(F.text.casefold().in_(["кпрофиль".casefold(), "профиль".casefold(), "комару профиль".casefold(), "камара профиль".casefold()]) | F.command("profile"))
