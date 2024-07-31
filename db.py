@@ -9,11 +9,12 @@ data_lock = asyncio.Lock()
 user_group_lock = asyncio.Lock()
 promo_lock = asyncio.Lock()
 
+write_event = asyncio.Event()
+
 for filename in ["premium_users.json", "komaru_user_cards.json"]:
     if not os.path.exists(filename):
         with open(filename, 'w') as f:
             json.dump({}, f)
-
 
 async def config_func():
     async with config_lock:
@@ -21,16 +22,16 @@ async def config_func():
             data = json.loads(await file.read())
         return data
 
-
 async def save_data(data):
     async with data_lock:
         try:
             async with aiofiles.open("komaru_user_cards.json", 'w') as f:
                 await f.write(json.dumps(data, ensure_ascii=False, indent=4))
             logging.info("Data successfully saved.")
+            write_event.set()  # Устанавливаем событие после успешной записи данных
         except Exception as e:
             logging.error(f"Failed to save data: {e}")
-
+            write_event.clear()  # Очищаем событие в случае ошибки
 
 async def load_data_cards():
     async with data_lock:
@@ -40,7 +41,6 @@ async def load_data_cards():
         except Exception as e:
             logging.error(f"Failed to load data: {e}")
             return {}
-
 
 async def register_user_and_group_async(message):
     chat_type = message.chat.type
@@ -81,13 +81,11 @@ async def register_user_and_group_async(message):
             async with aiofiles.open("user_group_data.json", "w") as file:
                 await file.write(json.dumps(data, indent=4))
 
-
 async def read_promo_data(filename):
     async with promo_lock:
         async with aiofiles.open(filename, 'r') as f:
             data = await f.read()
             return json.loads(data)
-
 
 async def write_promo_data(filename, data):
     async with promo_lock:
