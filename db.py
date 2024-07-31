@@ -28,10 +28,10 @@ async def save_data(data):
             async with aiofiles.open("komaru_user_cards.json", 'w') as f:
                 await f.write(json.dumps(data, ensure_ascii=False, indent=4))
             logging.info("Data successfully saved.")
-            write_event.set()  # Устанавливаем событие после успешной записи данных
+            write_event.set() 
         except Exception as e:
             logging.error(f"Failed to save data: {e}")
-            write_event.clear()  # Очищаем событие в случае ошибки
+            write_event.clear()
 
 async def load_data_cards():
     async with data_lock:
