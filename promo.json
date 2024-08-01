@@ -1,11 +1,9 @@
 {
-    "komaru5k": {
+    "komaru10k": {
         "until": 1722013200,
-        "users": [
-            1130692453
-        ],
-        "activation_limit": 1000,
-        "action": "give_prem 3",
+        "users": [],
+        "activation_limit": 5000,
+        "action": "give_prem 2",
         "activation_counts": 0
     }
 }
