@@ -1,6 +1,6 @@
 {
     "komaru10k": {
-        "until": 1722013200,
+        "until": 1722945600,
         "users": [],
         "activation_limit": 5000,
         "action": "give_prem 2",
