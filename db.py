@@ -21,28 +21,47 @@ async def config_func():
         return data
 
 
-async def save_data(data):
+async def save_data(data, retries=5, delay=2):
     data_raw = json.dumps(data, ensure_ascii=False, indent=4)
-    async with data_lock:
-        try:
-            async with aiofiles.open("komaru_user_cards.json", 'w') as f:
-                await f.write(data_raw)
-            logging.info("Data successfully saved.")
-        except Exception as e:
-            logging.error(f"Failed to save data: {e}")
+    for attempt in range(retries):
+        async with data_lock:
+            try:
+                async with aiofiles.open("komaru_user_cards.json", 'r') as f:
+                    current_data_raw = await f.read()
+                    current_data = json.loads(current_data_raw) if current_data_raw else {}
+            except FileNotFoundError:
+                current_data = {}
+            except Exception as e:
+                logging.error(f"Failed to load current data: {e}")
+                current_data = {}
+
+            current_data.update(data)
+            data_raw = json.dumps(current_data, ensure_ascii=False, indent=4)
+
+            try:
+                async with aiofiles.open("komaru_user_cards.json", 'w') as f:
+                    await f.write(data_raw)
+                logging.info("Data successfully saved.")
+                break
+            except Exception as e:
+                logging.error(f"Failed to save data: {e}")
+                if attempt < retries - 1:
+                    await asyncio.sleep(delay)
+                else:
+                    logging.error("Max retries reached, data was not saved.")
 
 
 async def load_data_cards():
-    data_raw = None
     async with data_lock:
         try:
             async with aiofiles.open("komaru_user_cards.json", 'r') as f:
                 data_raw = await f.read()
+                return json.loads(data_raw)
+        except FileNotFoundError:
+            return {}
         except Exception as e:
             logging.error(f"Failed to load data: {e}")
-    if data_raw:
-        return json.loads(data_raw)
-    return {}
+            return {}
 
 
 async def register_user_and_group_async(message):
