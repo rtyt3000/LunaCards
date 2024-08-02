@@ -19,6 +19,8 @@ async def get_dev_titul(user_id: int) -> str:
         return "@NAIX_EXE НУ ЧЕ ТАМ? BY @DERADERADERA."
     elif user_id in [1268026433, 6184515646]:
         return "Создатель"
+    elif user_id == 851455143:
+        return "несоня"
     else:
         return "как ты вообще сюда попал?"
 
