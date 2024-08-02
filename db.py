@@ -13,6 +13,7 @@ for filename in ["premium_users.json", "komaru_user_cards.json"]:
             json.dump({}, f)
 
 
+
 async def config_func():
     async with config_lock:
         async with aiofiles.open('config.json', 'r', encoding='utf-8') as file:
