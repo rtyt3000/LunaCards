@@ -21,6 +21,8 @@ async def get_dev_titul(user_id: int) -> str:
         return "Создатель"
     elif user_id == 851455143:
         return "несоня"
+    elif user_id == 6794926384:
+        return "ВАЙПЕРЫ ХУЕСОСЫ"
     else:
         return "как ты вообще сюда попал?"
 
