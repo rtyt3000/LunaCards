@@ -49,6 +49,15 @@ async def setup_router(dp, bot):
     async def komaru_cards_function(msg: Message):
         if not await last_time_usage(msg.from_user.id):
             return
+        if msg.reply_to_message:
+            if msg.reply_to_message.sender_chat and msg.reply_to_message.sender_chat.type == 'channel':
+                await msg.reply("Пожалуйста перейдите в чат для использования бота!")
+                return
+            elif (msg.reply_to_message.reply_to_message and
+                  msg.reply_to_message.reply_to_message.sender_chat and
+                  msg.reply_to_message.reply_to_message.sender_chat.type == 'channel'):
+                await msg.reply("Пожалуйста перейдите в чат для использования бота!")
+                return
         user_id = str(msg.from_user.id)
         user_nickname = msg.from_user.first_name
         await register_user_and_group_async(msg)
@@ -143,6 +152,15 @@ async def setup_router(dp, bot):
     async def user_profile(msg: Message):
         if not await last_time_usage(msg.from_user.id):
             return
+        if msg.reply_to_message:
+            if msg.reply_to_message.sender_chat and msg.reply_to_message.sender_chat.type == 'channel':
+                await msg.reply("Пожалуйста перейдите в чат для использования бота!")
+                return
+            elif (msg.reply_to_message.reply_to_message and
+                  msg.reply_to_message.reply_to_message.sender_chat and
+                  msg.reply_to_message.reply_to_message.sender_chat.type == 'channel'):
+                await msg.reply("Пожалуйста перейдите в чат для использования бота!")
+                return
         await register_user_and_group_async(msg)
         user_id = msg.from_user.id
         first_name = msg.from_user.first_name
