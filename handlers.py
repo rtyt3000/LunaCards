@@ -529,7 +529,7 @@ async def setup_router_3(dp, bot):
             await callback.answer(random.choice(responses), show_alert=True)
             return
 
-        data = await load_all_user_data(str(callback.from_user.id))
+        data = await load_all_user_data()
         user_id = str(callback.from_user.id)
         user_data = data.get(user_id, {'cats': [], 'points': 0, 'all_points': 0})
         message_text = ""
