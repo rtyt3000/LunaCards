@@ -314,7 +314,7 @@ async def setup_router(dp, bot):
                 await bot.send_message(message.chat.id,
                                        f"Промокод успешно активирован!\n\nВы получили премиум на {int(action[1])} дней!")
             elif action[0] == "kd":
-                data_komaru = await load_data_cards()
+                data_komaru = await load_user_data(str(message.from_user.id))
                 if str(user_id) in data_komaru:
                     user_data = data_komaru[str(user_id)]
                     current_time = time.time()
@@ -374,7 +374,7 @@ async def setup_router_2(dp, bot):
         config_data = await config_func()
         cats = config_data['cats']
         user_nickname = callback.from_user.first_name
-        data = await load_data_cards()
+        data = await load_user_data(user_id)
         user_data = data.get(user_id,
                              {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname, 'card_count': 0})
         collected_cards = len(user_data['cats'])
@@ -409,7 +409,7 @@ async def setup_router_2(dp, bot):
             rarity = callback.data[len('show_'):]
             user_id = str(callback.from_user.id)
             user_nickname = callback.from_user.first_name
-            data = await load_data_cards()
+            data = await load_user_data(user_id)
             user_data = data.get(user_id,
                                  {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname, 'card_count': 0})
             rarity_cards = [cat for cat in cats if
@@ -463,7 +463,7 @@ async def setup_router_2(dp, bot):
         config_data = await config_func()
         cats = config_data['cats']
         user_id, card_id = parts[1], parts[2]
-        data = await load_data_cards()
+        data = await load_user_data(user_id)
         user_data = data.get(user_id, {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': '', 'love_card': ''})
         card_name = next((card['name'] for card in cats if card['id'] == card_id), None)
         if card_name:
@@ -487,7 +487,7 @@ async def setup_router_2(dp, bot):
 
             logging.debug(f"User ID: {user_id}, Direction: {direction}, New Index: {new_index}, Rarity: {rarity}")
 
-            data = await load_data_cards()
+            data = await load_user_data(user_id)
             user_data = data.get(user_id, {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': ''})
             rarity_cards = [cat for cat in cats if
                             cat['name'] in user_data['cats'] and cat['rarity'].startswith(rarity)]
@@ -529,7 +529,7 @@ async def setup_router_3(dp, bot):
             await callback.answer(random.choice(responses), show_alert=True)
             return
 
-        data = await load_data_cards()
+        data = await load_user_data(str(callback.from_user.id))
         user_id = str(callback.from_user.id)
         user_data = data.get(user_id, {'cats': [], 'points': 0, 'all_points': 0})
         message_text = ""
