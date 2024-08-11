@@ -54,9 +54,9 @@ async def load_all_user_data():
             async with aiofiles.open(os.path.join(user_data_directory, filename), 'r') as file:
                 data = await file.read()
                 user_data = json.loads(data)
-                user_data['nickname'] = user_data.get('nickname', 'Unknown')
                 all_user_data[user_id] = user_data
-                
+                logging.debug(f"Loaded data for user {user_id}: {user_data}")
+
     return all_user_data
 
 
