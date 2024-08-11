@@ -21,23 +21,25 @@ async def config_func():
         return data
 
 
+os.makedirs('users', exist_ok=True)
+
 async def save_user_data(user_id, data):
     try:
         file_path = f'users/{user_id}_cards.json'
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         async with aiofiles.open(file_path, 'w', encoding='utf-8') as file:
             await file.write(json.dumps(data, ensure_ascii=False, indent=4))
     except Exception as e:
         print(f"Failed to save data for user {user_id}: {e}")
 
-
 async def load_user_data(user_id):
     try:
         file_path = f'users/{user_id}_cards.json'
+        if not os.path.exists(file_path):
+            return {} 
         async with aiofiles.open(file_path, 'r', encoding='utf-8') as file:
             data = json.loads(await file.read())
         return data
-    except FileNotFoundError:
-        return {}
     except Exception as e:
         print(f"Failed to load data for user {user_id}: {e}")
         return {}
