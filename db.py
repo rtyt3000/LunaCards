@@ -43,6 +43,19 @@ async def load_user_data(user_id):
     except Exception as e:
         print(f"Failed to load data for user {user_id}: {e}")
         return {}
+        
+async def load_all_user_data():
+    user_data_directory = "users"  # Укажите путь к директории
+    all_user_data = {}
+    
+    for filename in os.listdir(user_data_directory):
+        if filename.endswith("_cards.json"):
+            user_id = filename.split('_')[0]
+            async with aiofiles.open(os.path.join(user_data_directory, filename), 'r') as file:
+                data = await file.read()
+                all_user_data[user_id] = json.loads(data)
+                
+    return all_user_data
 
 
 async def register_user_and_group_async(message):
