@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from text import WELCOME_MESSAGE_PRIVATE, WELCOME_MESSAGE, HELP_MESSAGE, responses, PRIVACY_MESSAGE, forbidden_symbols
 from kb import start_kb, help_kb, profile_kb, cards_kb, get_card_navigation_keyboard, top_kb, subcribe_keyboard
 from premium import check_and_update_premium_status, activate_premium
-from db import save_data, load_data_cards, register_user_and_group_async, config_func, read_promo_data, write_promo_data
+from db import save_user_data, load_user_data, register_user_and_group_async, config_func, read_promo_data, write_promo_data
 from states import get_titul, user_button, last_time_usage, get_dev_titul
 from premium import send_payment_method_selection
 import emoji
@@ -63,8 +63,7 @@ async def setup_router(dp, bot):
         await register_user_and_group_async(msg)
         config_data = await config_func()
         cats = config_data['cats']
-
-        data = await load_data_cards()
+        data = await load_user_data(user_id)
         user_data = data.get(user_id,
                              {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname, 'card_count': 0,
                               'all_points': 0})
@@ -146,7 +145,7 @@ async def setup_router(dp, bot):
             user_data['last_usage'] = time.time()
             data[user_id] = user_data
 
-            await save_data(data)
+            await save_user_data(str(msg.from_user.id), data)
 
     @router.message(F.text.casefold().in_(["кпрофиль".casefold(), "профиль".casefold(), "комару профиль".casefold(), "камара профиль".casefold()]) | F.command("profile"))
     async def user_profile(msg: Message):
@@ -165,7 +164,7 @@ async def setup_router(dp, bot):
         user_id = msg.from_user.id
         first_name = msg.from_user.first_name
         last_name = msg.from_user.last_name or ""
-        data = await load_data_cards()
+        data = await load_user_data(user_id)
         user_data = data.get(str(user_id),
                              {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': first_name, 'card_count': 0})
         card_count = user_data.get('card_count', 0)
@@ -222,7 +221,7 @@ async def setup_router(dp, bot):
         if not await last_time_usage(message.from_user.id):
             return
         user_id = message.from_user.id
-        data = await load_data_cards()
+        data = await load_user_data(str(user_id))
         first_name = message.from_user.first_name
         premium_status, _ = await check_and_update_premium_status(str(user_id))
         user_data = data.get(str(user_id),
@@ -254,7 +253,7 @@ async def setup_router(dp, bot):
 
             user_data['nickname'] = new_nick
             data[str(user_id)] = user_data
-            await save_data(data)
+            await save_user_data(str(message.from_user.id), data)
             await message.reply(f"Ваш никнейм был изменен на {new_nick}.")
         else:
             await message.reply("Никнейм не может быть пустым. Укажите значение после команды.")
@@ -470,7 +469,7 @@ async def setup_router_2(dp, bot):
         if card_name:
             user_data['love_card'] = card_name
             data[user_id] = user_data
-            await save_data(data)
+            await save_user_data(user_id, data)
             await bot.answer_callback_query(callback.id, f"Карточка '{card_name}' теперь ваша любимая!")
         else:
             await bot.answer_callback_query(callback.id, "Не найдено карточек с таким ID.")
