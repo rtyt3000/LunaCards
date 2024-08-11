@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from text import WELCOME_MESSAGE_PRIVATE, WELCOME_MESSAGE, HELP_MESSAGE, responses, PRIVACY_MESSAGE, forbidden_symbols
 from kb import start_kb, help_kb, profile_kb, cards_kb, get_card_navigation_keyboard, top_kb, subcribe_keyboard
 from premium import check_and_update_premium_status, activate_premium
-from db import save_user_data, load_user_data, register_user_and_group_async, config_func, read_promo_data, write_promo_data
+from db import save_user_data, load_user_data, load_all_user_data, register_user_and_group_async, config_func, read_promo_data, write_promo_data
 from states import get_titul, user_button, last_time_usage, get_dev_titul
 from premium import send_payment_method_selection
 import emoji
