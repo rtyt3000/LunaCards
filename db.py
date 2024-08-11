@@ -45,7 +45,7 @@ async def load_user_data(user_id):
         return {}
         
 async def load_all_user_data():
-    user_data_directory = "users"  # Укажите путь к директории
+    user_data_directory = "users"
     all_user_data = {}
     
     for filename in os.listdir(user_data_directory):
@@ -53,7 +53,9 @@ async def load_all_user_data():
             user_id = filename.split('_')[0]
             async with aiofiles.open(os.path.join(user_data_directory, filename), 'r') as file:
                 data = await file.read()
-                all_user_data[user_id] = json.loads(data)
+                user_data = json.loads(data)
+                user_data['nickname'] = user_data.get('nickname', 'Unknown')
+                all_user_data[user_id] = user_data
                 
     return all_user_data
 
