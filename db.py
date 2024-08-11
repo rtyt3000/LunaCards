@@ -55,7 +55,7 @@ async def load_all_user_data():
                 data = await file.read()
                 user_data = json.loads(data)
                 all_user_data[user_id] = user_data
-                logging.debug(f"Loaded data for user {user_id}: {user_data}")
+                print(f"Loaded data for user {user_id}: {user_data}")
 
     return all_user_data
 
