@@ -21,47 +21,26 @@ async def config_func():
         return data
 
 
-async def save_data(data, retries=5, delay=2):
-    data_raw = json.dumps(data, ensure_ascii=False, indent=4)
-    for attempt in range(retries):
-        async with data_lock:
-            try:
-                async with aiofiles.open("komaru_user_cards.json", 'r') as f:
-                    current_data_raw = await f.read()
-                    current_data = json.loads(current_data_raw) if current_data_raw else {}
-            except FileNotFoundError:
-                current_data = {}
-            except Exception as e:
-                logging.error(f"Failed to load current data: {e}")
-                current_data = {}
-
-            current_data.update(data)
-            data_raw = json.dumps(current_data, ensure_ascii=False, indent=4)
-
-            try:
-                async with aiofiles.open("komaru_user_cards.json", 'w') as f:
-                    await f.write(data_raw)
-                logging.info("Data successfully saved.")
-                break
-            except Exception as e:
-                logging.error(f"Failed to save data: {e}")
-                if attempt < retries - 1:
-                    await asyncio.sleep(delay)
-                else:
-                    logging.error("Max retries reached, data was not saved.")
+async def save_user_data(user_id, data):
+    try:
+        file_path = f'users/{user_id}_cards.json'
+        async with aiofiles.open(file_path, 'w', encoding='utf-8') as file:
+            await file.write(json.dumps(data, ensure_ascii=False, indent=4))
+    except Exception as e:
+        print(f"Failed to save data for user {user_id}: {e}")
 
 
-async def load_data_cards():
-    async with data_lock:
-        try:
-            async with aiofiles.open("komaru_user_cards.json", 'r') as f:
-                data_raw = await f.read()
-                return json.loads(data_raw)
-        except FileNotFoundError:
-            return {}
-        except Exception as e:
-            logging.error(f"Failed to load data: {e}")
-            return {}
+async def load_user_data(user_id):
+    try:
+        file_path = f'users/{user_id}_cards.json'
+        async with aiofiles.open(file_path, 'r', encoding='utf-8') as file:
+            data = json.loads(await file.read())
+        return data
+    except FileNotFoundError:
+        return {}
+    except Exception as e:
+        print(f"Failed to load data for user {user_id}: {e}")
+        return {}
 
 
 async def register_user_and_group_async(message):
