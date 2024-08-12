@@ -230,7 +230,7 @@ async def setup_router(dp, bot):
             new_nick = parts[1].strip()
     
             if len(new_nick) < 4:
-                await message.reply("Никнейм должен быть короче 3 символов.")
+                await message.reply("Никнейм должен быть длиннее 3 символов.")
                 return
     
             if len(new_nick) > 16:
@@ -239,10 +239,10 @@ async def setup_router(dp, bot):
     
             if not re.match(r'^[\w .,!?@#$%^&*()-+=/\]+$|^[\w .,!?@#$%^&*()-+=/\а-яёА-ЯЁ]+$', new_nick):
                 await message.reply("Никнейм может содержать только латинские/русские буквы, цифры и базовые символы пунктуации.")
-
+                return
+    
             all_user_data = await load_all_user_data()
-            print(all_user_data)
-            if any(data.get('nickname', '').casefold() == new_nick.casefold() for data in all_user_data.values()):
+            if any(u_data.get('nickname', '').casefold() == new_nick.casefold() for u_data in all_user_data.values()):
                 await message.reply("Этот никнейм уже занят. Пожалуйста, выберите другой.")
                 return
     
