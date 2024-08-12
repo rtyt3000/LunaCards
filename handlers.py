@@ -65,7 +65,7 @@ async def setup_router(dp, bot):
         cats = config_data['cats']
         data = await load_user_data(user_id)
         user_data = data.get(user_id,
-                             {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': user_nickname, 'card_count': 0,
+                             {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': 'Гость', 'card_count': 0,
                               'all_points': 0})
 
         if 'card_count' not in user_data:
@@ -166,7 +166,7 @@ async def setup_router(dp, bot):
         last_name = msg.from_user.last_name or ""
         data = await load_user_data(user_id)
         user_data = data.get(str(user_id),
-                             {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': first_name, 'card_count': 0})
+                             {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': 'Гость', 'card_count': 0})
         card_count = user_data.get('card_count', 0)
         favorite_card = user_data.get('love_card', 'Не выбрана')
         titul = await get_titul(card_count)
@@ -225,7 +225,7 @@ async def setup_router(dp, bot):
         first_name = message.from_user.first_name
         premium_status, _ = await check_and_update_premium_status(str(user_id))
         user_data = data.get(str(user_id),
-                             {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': first_name, 'card_count': 0})
+                             {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': 'Гость', 'card_count': 0})
         parts = message.text.casefold().split('сменить ник'.casefold(), 1)
 
         if len(parts) > 1 and parts[1].strip():
