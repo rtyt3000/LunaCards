@@ -196,14 +196,15 @@ async def setup_router(dp, bot):
                 photo_cache = 'https://tinypic.host/images/2024/07/08/avatar.jpg'
     
             caption = (
-                f"Привет {html.bold(html.quote(user_data['nickname']))}!\n\n"
+                f"Привет <b>&laquo;{nickname}&raquo;</b>!\n\n"
                 f"🏡 Твой профиль:\n"
                 f"🃏 Собрано {collected_cards} из {total_cards} карточек\n"
-                f"💰 Очки: {user_data['points']}\n"
+                f"💰 Очки: {points}\n"
                 f"🎖️ Титул: {titul}\n"
                 f"💖 Любимая карточка: {favorite_card}\n"
                 f"🌟 {premium_message}\n"
-                f"<blockquote> {dev_titul_message} </blockquote>\n"
+                f"<blockquote>{dev_titul_message}</blockquote>\n\n"
+                f"💡 Хочешь сменить ник? Введи <code>сменить ник &lt;ник&gt;</code>"
             )
             markup = await profile_kb(msg)
     
