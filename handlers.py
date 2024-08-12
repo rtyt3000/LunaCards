@@ -221,7 +221,9 @@ async def setup_router(dp, bot):
         if not await last_time_usage(message.from_user.id):
             return
         user_id = message.from_user.id
-        user_data = await load_user_data(str(user_id))
+        data = await load_user_data(str(user_id))
+        user_data = data.get(str(user_id),
+                                     {'cats': [], 'last_usage': 0, 'points': 0, 'nickname': 'Гость', 'card_count': 0})
         first_name = message.from_user.first_name
         premium_status, _ = await check_and_update_premium_status(str(user_id))
     
@@ -233,8 +235,12 @@ async def setup_router(dp, bot):
                 await message.reply("Никнейм должен быть длиннее 3 символов.")
                 return
     
-            if len(new_nick) > 16:
-                await message.reply("Никнейм не может быть длиннее 16 символов.")
+            if len(new_nick) > 64:
+                await message.reply("Никнейм не может быть длиннее 64 символов.")
+                return
+    
+            if not premium_status and any(emoji.is_emoji(char) for char in new_nick):
+                await message.reply("Вы не можете использовать эмодзи в нике. Приобретите премиум в профиле!")
                 return
     
             if not re.match(r'^[\w .,!?@#$%^&*()-+=/\]+$|^[\w .,!?@#$%^&*()-+=/\а-яёА-ЯЁ]+$', new_nick):
@@ -242,19 +248,17 @@ async def setup_router(dp, bot):
                 return
     
             all_user_data = await load_all_user_data()
-            if any(u_data.get('nickname', '').casefold() == new_nick.casefold() for u_data in all_user_data.values()):
+            if any(data.get('nickname', '').casefold() == new_nick.casefold() for data in all_user_data.values()):
                 await message.reply("Этот никнейм уже занят. Пожалуйста, выберите другой.")
                 return
     
-            if not premium_status and any(emoji.is_emoji(char) for char in new_nick):
-                await message.reply("Вы не можете использовать эмодзи в нике. Приобретите премиум в профиле!")
-                return
-    
             user_data['nickname'] = new_nick
-            await save_user_data(str(user_id), user_data)
+            data[str(user_id)] = user_data
+            await save_user_data(str(message.from_user.id), data)
             await message.reply(f"Ваш никнейм был изменен на {new_nick}.")
         else:
             await message.reply("Никнейм не может быть пустым. Укажите значение после команды.")
+        
 
     @router.message(F.text.casefold().startswith("промо ".casefold()))
     async def promo(message):
