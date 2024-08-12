@@ -233,11 +233,11 @@ async def setup_router(dp, bot):
             new_nick = parts[1].strip()
     
             if len(new_nick) < 4:
-                await message.reply("Никнейм должен быть длиннее 3 символов.")
+                await message.reply("Никнейм должен быть короче 4 символов.")
                 return
     
-            if len(new_nick) > 64:
-                await message.reply("Никнейм не может быть длиннее 64 символов.")
+            if len(new_nick) > 32:
+                await message.reply("Никнейм не может быть длиннее 32 символов.")
                 return
     
             if not premium_status and any(emoji.is_emoji(char) for char in new_nick):
