@@ -9,8 +9,9 @@ async def separate_users_data():
             data = json.loads(await file.read())
             for user_id, user_data in data.items():
                 user_filename = f'users/{user_id}_cards.json'
+                data_to_write = {user_id: user_data}
                 async with aiofiles.open(user_filename, mode='w', encoding='utf-8') as user_file:
-                    await user_file.write(json.dumps(user_data, ensure_ascii=False, indent=4))
+                    await user_file.write(json.dumps(data_to_write, ensure_ascii=False, indent=4))
         print("Data has been separated successfully.")
     except Exception as e:
         print(f"An error occurred while separating data: {e}")
