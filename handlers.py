@@ -203,7 +203,7 @@ async def setup_router(dp, bot):
                 f"🎖️ Титул: {titul}\n"
                 f"💖 Любимая карточка: {favorite_card}\n"
                 f"🌟 {premium_message}\n"
-                f"{dev_titul_message}\n\n"
+                f"{dev_titul_message}\n"
                 f"💡 Хочешь сменить ник? Введи <code>сменить ник &lt;ник&gt;</code>"
             )
             markup = await profile_kb(msg)
