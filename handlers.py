@@ -181,7 +181,7 @@ async def setup_router(dp, bot):
     
         if user_id in [6184515646, 1268026433, 5493956779, 1022923020, 851455143, 6794926384, 6679727618]:
             dev_titul = await get_dev_titul(user_id)
-            dev_titul_message = f"🪬 Dev Титул: {dev_titul}"
+            dev_titul_message = f"<blockquote> 🪬 Dev Титул: {dev_titul} </blockquote>"
         else:
             dev_titul_message = ""
     
@@ -203,7 +203,7 @@ async def setup_router(dp, bot):
                 f"🎖️ Титул: {titul}\n"
                 f"💖 Любимая карточка: {favorite_card}\n"
                 f"🌟 {premium_message}\n"
-                f"<blockquote> {dev_titul_message} </blockquote>\n\n"
+                f"{dev_titul_message}\n\n"
                 f"💡 Хочешь сменить ник? Введи <code>сменить ник &lt;ник&gt;</code>"
             )
             markup = await profile_kb(msg)
