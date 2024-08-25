@@ -1,4 +1,7 @@
+import os
 import random
+import sys
+sys.path.insert(0, sys.path[0] + "..")
 import re
 from datetime import datetime, timedelta
 
@@ -7,6 +10,8 @@ import sqlalchemy
 from aiogram import F, Router, types
 from aiogram.types import Message
 from aiogram_dialog import DialogManager
+
+sys.path.append(os.path.realpath('.'))
 
 from database.cards import get_all_cards
 from database.models import Card

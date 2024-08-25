@@ -12,8 +12,9 @@ url = URL.create(
     drivername="postgresql+asyncpg",
     username="postgres",
     host="127.0.0.1",
+    port=5433,
     database="komaru_cards",
-    password="QwerTY",
+    password="komaru",
 )
 engine = create_async_engine(url)
 async_session: AsyncSession = async_sessionmaker(engine, expire_on_commit=False)

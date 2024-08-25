@@ -1,10 +1,14 @@
 import asyncio
 import logging
+from mailbox import Message
 
-from aiogram_dialog import setup_dialogs
+from aiogram.filters import Command
+
+from aiogram_dialog import setup_dialogs, DialogManager
 from loader import bot
 from aiogram import Dispatcher
 from database import setup_db
+from database.cards import parse_cards
 from aiogram.fsm.storage.memory import MemoryStorage
 from handlers import commands_router, profile_router, text_triggers_router, premium_router
 from middlewares import RegisterMiddleware, ThrottlingMiddleware, BannedMiddleware
@@ -24,5 +28,9 @@ async def main():
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 
+@dp.message(Command("test"))
+async def test(msg: Message, dialog_manager: DialogManager):
+    await parse_cards("config.json")
+# чек дб (сессия закончится через 5 мин кста)
 if __name__ == "__main__":
     asyncio.run(main())
