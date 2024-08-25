@@ -1,28 +1,28 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
-from aiogram.enums.parse_mode import ParseMode
+from aiogram_dialog import setup_dialogs
+from loader import bot
+from aiogram import Dispatcher
+from database import setup_db
 from aiogram.fsm.storage.memory import MemoryStorage
-
-import config
-from handlers import router, setup_router, setup_router_2, setup_router_3
-from premium import start_dp
-from admin import setup_router_admin
+from handlers import commands_router, profile_router, text_triggers_router, premium_router
+from middlewares import RegisterMiddleware, ThrottlingMiddleware, BannedMiddleware
+from handlers.admin_dialogs import dialogs_router
+dp = Dispatcher(storage=MemoryStorage())
+logging.basicConfig(level=logging.INFO)
 
 
 async def main():
-    bot = Bot(token=config.BOT_TOKEN)
-    dp = Dispatcher(storage=MemoryStorage())
-    await setup_router(dp, bot)
-    await setup_router_2(dp, bot)
-    await setup_router_3(dp, bot)
-    await setup_router_admin(dp, bot)
-    await start_dp(dp, bot)
+    await setup_db()
+    dp.include_routers(commands_router, profile_router,  text_triggers_router, premium_router, dialogs_router)
+    dp.message.middleware(ThrottlingMiddleware())
+    dp.message.middleware(RegisterMiddleware())
+    dp.message.middleware(BannedMiddleware())
+    setup_dialogs(dp)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING)
     asyncio.run(main())

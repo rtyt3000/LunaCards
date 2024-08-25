@@ -1,5 +1,5 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram import types, F, Router
+from aiogram import types
 from aiogram.types import Message
 import random
 from states import user_button
@@ -7,8 +7,10 @@ from states import user_button
 
 async def start_kb(msg: Message):
     builder = InlineKeyboardBuilder()
-    builder.row(types.InlineKeyboardButton(text="➡️ Добавить в группу",
-                                           url="https://t.me/KomaruCardsBot?startgroup=iris&admin=change_info+restrict_members+delete_messages+pin_messages+invite_users"))
+    builder.row(types.InlineKeyboardButton(
+        text="➡️ Добавить в группу",
+        url="https://t.me/KomaruCardsBot?startgroup=iris&admin=change_info+restrict_members+"
+            "delete_messages+pin_messages+invite_users"))
     return builder.as_markup()
 
 
@@ -41,17 +43,19 @@ async def cards_kb(rarities):
 
 async def get_card_navigation_keyboard(user_id, card_index, rarity, rarity_cards, card_id):
     builder = InlineKeyboardBuilder()
-    love_button = types.InlineKeyboardButton(text="❤️", callback_data=f'love_{user_id[:15]}_{card_id}')
+    love_button = types.InlineKeyboardButton(text="❤️", callback_data=f'love_{user_id}_{card_id}')
     builder.add(love_button)
 
     if card_index > 0:
         prev_button = types.InlineKeyboardButton(text="⬅️",
-                                                 callback_data=f'navigate_{user_id[:15]}_prev_{card_index - 1}_{rarity[:15]}')
+                                                 callback_data=f'navigate_{user_id}_prev_'
+                                                               f'{card_index - 1}_{rarity[:15]}')
         builder.add(prev_button)
 
     if card_index < len(rarity_cards) - 1:
         next_button = types.InlineKeyboardButton(text="➡️",
-                                                 callback_data=f'navigate_{user_id[:15]}_next_{card_index + 1}_{rarity[:15]}')
+                                                 callback_data=f'navigate_{user_id}_next_'
+                                                               f'{card_index + 1}_{rarity[:15]}')
         builder.add(next_button)
 
     return builder.as_markup()
@@ -125,7 +129,7 @@ async def payment_crypto_keyboard(invoice_id, invoice_url):
     return builder.as_markup()
 
 
-async def subcribe_keyboard():
+async def subscribe_keyboard():
     builder = InlineKeyboardBuilder()
     subscribe_button = types.InlineKeyboardButton(text="Подписаться", url="https://t.me/komaru_updates")
     builder.add(subscribe_button)

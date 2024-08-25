@@ -1,15 +1,4 @@
-import time
-
 user_button = {}
-last_request_time = {}
-
-
-async def last_time_usage(user_id):
-    current_time = time.time()
-    if user_id in last_request_time and (current_time - last_request_time[user_id]) < 2:
-        return False
-    last_request_time[user_id] = current_time
-    return True
 
 
 async def get_dev_titul(user_id: int) -> str:
