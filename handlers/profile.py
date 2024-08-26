@@ -5,6 +5,7 @@ from aiogram import F, Router, types
 from aiogram.types import InputMediaPhoto, Message
 from aiogram.utils.text_decorations import html_decoration
 from aiogram_dialog import DialogManager
+from sqlalchemy import func
 
 from database.cards import get_all_cards, get_card
 from database.models import Card, User
@@ -238,7 +239,7 @@ async def cards_top_callback(callback: types.CallbackQuery):
 
     if choice == "cards":
         top = await get_top_users_by_cards()
-        user_rank = await get_me_on_top(User.card_count, user_id)
+        user_rank = await get_me_on_top(func.array_length(User.cards, 1), user_id)
 
         message_text = "🏆 Топ-10 пользователей по количеству собранных карточек:\n\n"
         for top_user in top:

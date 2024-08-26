@@ -25,7 +25,6 @@ class User(Base):
     card_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     premium_expire: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
     is_banned: Mapped[bool] = mapped_column(Boolean, default=False)
-    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class Group(Base):
