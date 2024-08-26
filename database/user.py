@@ -3,7 +3,7 @@ from typing import Dict
 
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.functions import count
+from sqlalchemy.sql.functions import count, func
 
 from database.models import User
 from loader import engine
@@ -69,19 +69,22 @@ async def check_premium(premium_expire: datetime):
 
 
 async def get_top_users_by_cards():
-    async with (AsyncSession(engine) as session):
+    async with AsyncSession(engine) as session:
         top_users = (
             await session.execute(
-                select(User).order_by(desc(User.card_count)).limit(10)
+                select(User)
+                .order_by(desc(func.array_length(User.cards, 1)), desc(User.telegram_id))
+                .limit(10)
             )
         ).scalars().all()
         top = []
         i = 1
         for top_user in top_users:
             icon = "💎" if await check_premium(top_user.premium_expire) else ""
-            top += [[i, icon, top_user.username, top_user.card_count]]
+            top += [[i, icon, top_user.username, len(top_user.cards)]]
             i += 1
         return top
+
 
 
 async def get_top_users_by_points():
@@ -169,5 +172,3 @@ async def get_all_users() -> [User]:
     async with AsyncSession(engine) as session:
         users: Dict[User] = (await session.execute(select(User))).scalars().all()
         return users
-
-

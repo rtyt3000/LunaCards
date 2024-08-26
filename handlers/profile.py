@@ -14,6 +14,7 @@ from filters import NotCommentFilter, ProfileFilter
 from kb import cards_kb, get_card_navigation_keyboard, profile_kb, top_kb
 from loader import bot
 from handlers.premium import send_payment_method_selection
+from sqlalchemy import func
 from states import get_dev_titul, get_titul, user_button
 from text import responses
 
@@ -238,15 +239,15 @@ async def cards_top_callback(callback: types.CallbackQuery):
 
     if choice == "cards":
         top = await get_top_users_by_cards()
-        user_rank = await get_me_on_top(User.card_count, user_id)
+        user_rank = await get_me_on_top(func.array_length(User.cards), user_id)
 
         message_text = "🏆 Топ-10 пользователей по количеству собранных карточек:\n\n"
         for top_user in top:
             message_text += f"{top_user[0]}. {top_user[1]} {top_user[2]}: {top_user[3]} карточек\n"
 
         if user_rank and user_rank > 10:
-            message_text += (f"\nВаше место: {user_rank}"
-                             f" ({user.username}: {user.card_count} карточек)")
+            message_text += (f"\nВаше место: {user_rank} "
+                             f"({user.username}: {len(user.cards)} карточек)")
 
         markup = await top_kb(callback, "cards")
 
