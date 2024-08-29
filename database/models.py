@@ -15,8 +15,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
-    username: Mapped[str] = mapped_column(VARCHAR(32), nullable=True, unique=True)
-    first_name: Mapped[str] = mapped_column(VARCHAR(80), nullable=False)
+    nickname: Mapped[str] = mapped_column(VARCHAR(64), default="Гость", unique=False)
     cards: Mapped[[int]] = mapped_column(MutableList.as_mutable(ARRAY(Integer)), default=[])
     points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     all_points: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
