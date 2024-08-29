@@ -189,7 +189,7 @@ async def parse_users(users_file: str, premium_file: str):
                 user_date: Dict = json.load(f)
                 premium_data: Dict = json.load(p)
                 for bot_user in user_date:
-                    if bot_user == "6279773658":
+                    if bot_user == "6184515646":
                         continue
                     user: Dict = user_date[bot_user]
                     nickname = user['nickname']
