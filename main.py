@@ -32,7 +32,7 @@ async def main():
 
 @dp.message(Command("test"))
 async def test(msg: Message, dialog_manager: DialogManager):
-    await parse_cards()
+    await parse_cards("config.json")
 
 
 if __name__ == "__main__":
