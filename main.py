@@ -5,6 +5,8 @@ from mailbox import Message
 from aiogram.filters import Command
 
 from aiogram_dialog import setup_dialogs, DialogManager
+
+from database.user import parse_users
 from loader import bot
 from aiogram import Dispatcher
 from database import setup_db
@@ -30,7 +32,8 @@ async def main():
 
 @dp.message(Command("test"))
 async def test(msg: Message, dialog_manager: DialogManager):
-    await parse_cards("config.json")
-# чек дб (сессия закончится через 5 мин кста)
+    await parse_users("komaru_user_cards.json", "premium_users.json")
+
+
 if __name__ == "__main__":
     asyncio.run(main())

@@ -20,7 +20,7 @@ async def on_get_id(message: Message, widget, dialog_manager: DialogManager, tel
 
 async def get_username_getter(dialog_manager: DialogManager, event_from_user: User, bot: Bot, **kwargs):
     user: BotUser = dialog_manager.dialog_data['user']
-    return {"username": user.username, "user_id": user.telegram_id, }
+    return {"username": user.nickname, "user_id": user.telegram_id, }
 
 
 async def on_get_username(message: Message, widget, dialog_manager: DialogManager, username: str):
@@ -31,7 +31,7 @@ async def on_get_username(message: Message, widget, dialog_manager: DialogManage
 async def accept_getter(dialog_manager: DialogManager, event_from_user: User, bot: Bot, **kwargs):
     user: BotUser = dialog_manager.dialog_data['user']
     username: str = dialog_manager.dialog_data['username']
-    return {"old_username": user.username, "user_id": user.telegram_id, "new_username": username}
+    return {"old_username": user.nickname, "user_id": user.telegram_id, "new_username": username}
 
 
 async def accept_clicked(callback: CallbackQuery, button: Button, manager: DialogManager):

@@ -33,7 +33,7 @@ async def on_date_selected(callback: CallbackQuery, widget,
 async def accept_premium_getter(dialog_manager: DialogManager, event_from_user: User, bot: Bot, **kwargs):
     user: BotUser = dialog_manager.dialog_data['user']
     end_data = dialog_manager.dialog_data['end_date']
-    return {"username": user.username, "user_id": user.telegram_id, "premium_end": str(end_data),
+    return {"username": user.nickname, "user_id": user.telegram_id, "premium_end": str(end_data),
             "old_premium": user.premium_expire}
 
 

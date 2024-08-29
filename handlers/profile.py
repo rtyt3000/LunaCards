@@ -83,7 +83,7 @@ async def user_profile(msg: Message, dialog_manager: DialogManager):
             photo_cache = 'https://tinypic.host/images/2024/07/08/avatar.jpg'
 
         caption = (
-            f"Привет {html_decoration.bold(html_decoration.quote(user.username))}!\n\n"
+            f"Привет {html_decoration.bold(html_decoration.quote(user.nickname))}!\n\n"
             f"🏡 Твой профиль:\n"
             f"🃏 Собрано {collected_cards} из {total_cards} карточек\n"
             f"💰 Очки: {user.points}\n"
@@ -274,7 +274,7 @@ async def cards_top_callback(callback: types.CallbackQuery):
 
         if user_rank and user_rank > 10:
             message_text += (f"\nВаше место: {user_rank} "
-                             f"({user.username}: {user.all_points} очков)")
+                             f"({user.nickname}: {user.all_points} очков)")
 
         markup = await top_kb(callback, "all")
     else:

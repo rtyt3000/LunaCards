@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import json
+from datetime import date, datetime, timedelta
 from typing import Dict
 
 from sqlalchemy import desc, select
@@ -11,9 +12,12 @@ from loader import engine
 from datetime import datetime, timedelta
 
 
-async def create_user(telegram_id: int, username: str, first_name: str):
+async def create_user(telegram_id: int, username: str):
     async with AsyncSession(engine) as session:
-        user = User(telegram_id=telegram_id, username=username, first_name=first_name)
+        if username:
+            user = User(telegram_id=telegram_id, nickname=username)
+        else:
+            user = User(telegram_id=telegram_id)
         session.add(user)
         await session.commit()
         user = (await session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one()
@@ -61,8 +65,8 @@ async def add_card(telegram_id: int, card_id: int):
 
 async def change_username(telegram_id: int, username: str):
     async with AsyncSession(engine) as session:
-        user = (await session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
-        user.username = username
+        user: User = (await session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
+        user.nickname = username
         await session.commit()
 
 
@@ -74,14 +78,14 @@ async def get_top_users_by_cards():
     async with (AsyncSession(engine) as session):
         top_users = (
             await session.execute(
-                select(User).order_by(func.array_length(User.cards, 1)).limit(10)
+                select(User).order_by(desc(func.array_length(User.cards, 1))).limit(10)
             )
         ).scalars().all()
         top = []
         i = 1
         for top_user in top_users:
             icon = "💎" if await check_premium(top_user.premium_expire) else ""
-            top += [[i, icon, top_user.username, len(top_user.cards)]]
+            top += [[i, icon, top_user.nickname, len(top_user.cards)]]
             i += 1
         return top
 
@@ -97,7 +101,7 @@ async def get_top_users_by_points():
         i = 1
         for top_user in top_users:
             icon = "💎" if await check_premium(top_user.premium_expire) else ""
-            top += [[i, icon, top_user.username, top_user.points]]
+            top += [[i, icon, top_user.nickname, top_user.points]]
             i += 1
         return top
 
@@ -113,7 +117,7 @@ async def get_top_users_by_all_points():
         i = 1
         for top_user in top_users:
             icon = "💎" if await check_premium(top_user.premium_expire) else ""
-            top += [[i, icon, top_user.username, top_user.all_points]]
+            top += [[i, icon, top_user.nickname, top_user.all_points]]
             i += 1
         return top
 
@@ -178,3 +182,32 @@ async def get_all_users() -> [User]:
         return users
 
 
+async def parse_users(users_file: str, premium_file: str):
+    async with AsyncSession(engine) as session:
+        with open(users_file, 'r', encoding="utf8") as f:
+            with open(premium_file, 'r', encoding="utf8") as p:
+                user_date: Dict = json.load(f)
+                premium_data: Dict = json.load(p)
+                for bot_user in user_date:
+                    if bot_user == "6279773658":
+                        continue
+                    user: Dict = user_date[bot_user]
+                    nickname = user['nickname']
+                    if user.get('card_count'):
+                        card_count = user['card_count']
+                    else:
+                        card_count = 0
+                        print(">>>")
+                    if user.get('all_points'):
+                        all_points = user['all_points']
+                    else:
+                        all_points = 0
+                        print("<<<")
+                    if premium_data.get(bot_user):
+                        premium_expire = datetime.strptime(premium_data[bot_user], '%Y-%m-%d').date()
+                    else:
+                        premium_expire = None
+                    botUser = User(telegram_id=int(bot_user), nickname=nickname, card_count=card_count,
+                                   all_points=all_points, premium_expire=premium_expire)
+                    session.add(botUser)
+        await session.commit()
