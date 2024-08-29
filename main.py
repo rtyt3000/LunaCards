@@ -32,7 +32,7 @@ async def main():
 
 @dp.message(Command("test"))
 async def test(msg: Message, dialog_manager: DialogManager):
-    await parse_users("komaru_user_cards.json", "premium_users.json")
+    await parse_cards()
 
 
 if __name__ == "__main__":
