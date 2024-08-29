@@ -78,7 +78,7 @@ async def get_top_users_by_cards():
     async with (AsyncSession(engine) as session):
         top_users = (
             await session.execute(
-                select(User).order_by(desc(func.array_length(User.cards, 1))).limit(10)
+                select(User).order_by(func.array_length(User.cards, 1)).limit(10)
             )
         ).scalars().all()
         top = []
