@@ -12,6 +12,7 @@ url = URL.create(
     drivername="postgresql+asyncpg",
     username="postgres",
     host="127.0.0.1",
+    port=5433,
     database="komaru_cards",
     password="QwerTY",
 )
