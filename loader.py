@@ -18,4 +18,4 @@ url = URL.create(
 )
 engine = create_async_engine(url)
 async_session: AsyncSession = async_sessionmaker(engine, expire_on_commit=False)
-crypto = AioCryptoPay(token=config.AIO_TOKEN, network=Networks.TEST_NET)
+crypto = AioCryptoPay(token=config.AIO_TOKEN, network=Networks.MAIN_NET)
