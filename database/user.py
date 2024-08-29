@@ -8,6 +8,8 @@ from sqlalchemy.sql.functions import count, func
 from database.models import User
 from loader import engine
 
+from datetime import datetime, timedelta
+
 
 async def create_user(telegram_id: int, username: str, first_name: str):
     async with AsyncSession(engine) as session:
@@ -134,7 +136,12 @@ async def premium_from_datetime(telegram_id: int, end_date: datetime):
 async def add_premium(telegram_id: int, days: timedelta):
     async with AsyncSession(engine) as session:
         user: User = (await session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
-        user.premium_expire = datetime.now() + days
+
+        if user.premium_expire is None or datetime.now() >= user.premium_expire:
+            user.premium_expire = datetime.now() + days
+        else:
+            user.premium_expire = user.premium_expire + days
+
         await session.commit()
 
 
