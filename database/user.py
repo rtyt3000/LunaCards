@@ -71,7 +71,7 @@ async def change_username(telegram_id: int, username: str):
 
 
 async def check_premium(premium_expire: datetime):
-    return True if premium_expire is not None and premium_expire > datetime.now() else False
+    return True if premium_expire is not None and premium_expire.date() > datetime.now().date() else False
 
 
 async def get_top_users_by_cards():
