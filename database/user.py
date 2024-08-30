@@ -89,7 +89,6 @@ async def get_top_users_by_cards():
             i += 1
         return top
 
-
 async def get_top_users_by_points():
     async with (AsyncSession(engine) as session):
         top_users = (
