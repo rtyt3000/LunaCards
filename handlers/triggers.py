@@ -19,6 +19,7 @@ from database.user import add_card, add_points, change_username, check_premium, 
 from filters import CardFilter, NotCommentFilter
 from loader import bot
 from text import forbidden_symbols
+import validators
 
 text_triggers_router = Router()
 
@@ -105,7 +106,7 @@ async def change_nickname(message: types.Message, dialog_manager: DialogManager)
                                     "цифры и базовые символы пунктуации.")
                 return
 
-        if '@' in new_nick or re.search(r'http[s]?://', new_nick):
+        if '@' in new_nick or validators.url(new_nick):
             await message.reply("Никнейм не может содержать символ '@' или ссылки.")
             return
 
