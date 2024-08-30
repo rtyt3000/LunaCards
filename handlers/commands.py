@@ -7,6 +7,8 @@ from handlers.admin_dialogs import AdminSG
 from kb import help_kb, start_kb
 from text import HELP_MESSAGE, PRIVACY_MESSAGE, WELCOME_MESSAGE, WELCOME_MESSAGE_PRIVATE
 
+import config
+
 commands_router = Router()
 
 
@@ -33,6 +35,6 @@ async def privacy_handler(msg: Message, dialog_manager: DialogManager):
 
 @commands_router.message(Command("admin"))
 async def admin_cmd(message: Message, dialog_manager: DialogManager):
-    if message.from_user.id not in config.ADMINS:
+    if message.from_user.id not in config.admins:
         return
     await dialog_manager.start(AdminSG.menu)
