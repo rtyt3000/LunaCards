@@ -100,10 +100,14 @@ async def change_nickname(message: types.Message, dialog_manager: DialogManager)
                 await message.reply("Вы не можете использовать эмодзи в нике. Приобретите премиум в профиле!")
                 return
         else:
-            if not re.match(r'^[\w .,!?@#$%^&*()-+=/\]+$|^[\w .,!?@#$%^&*()-+=/а-яёА-ЯЁ]+$', new_nick):
+            if not re.match(r'^[\w .,!?#$%^&*()-+=/\]+$|^[\w .,!?#$%^&*()-+=/а-яёА-ЯЁ]+$', new_nick):
                 await message.reply("Никнейм может содержать только латинские/русские буквы, "
                                     "цифры и базовые символы пунктуации.")
                 return
+
+        if '@' in new_nick or re.search(r'http[s]?://', new_nick):
+            await message.reply("Никнейм не может содержать символ '@' или ссылки.")
+            return
 
         try:
             await change_username(user.telegram_id, new_nick)
