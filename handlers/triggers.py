@@ -106,8 +106,8 @@ async def change_nickname(message: types.Message, dialog_manager: DialogManager)
                                     "цифры и базовые символы пунктуации.")
                 return
 
-        if '@' in new_nick or validators.url(new_nick):
-            await message.reply("Никнейм не может содержать символ '@' или ссылки.")
+        if '@' in new_nick or validators.url(new_nick) or 't.me' in new_nick:
+            await message.reply("Никнейм не может содержать символ '@', ссылки или упоминания t.me.")
             return
 
         try:
