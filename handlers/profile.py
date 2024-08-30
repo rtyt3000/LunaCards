@@ -247,7 +247,7 @@ async def cards_top_callback(callback: types.CallbackQuery):
 
         if user_rank and user_rank > 10:
             message_text += (f"\nВаше место: {user_rank}"
-                             f" ({user.username}: {user.card_count} карточек)")
+                             f" ({user.nickname}: {user.card_count} карточек)")
 
         markup = await top_kb(callback, "cards")
 
@@ -260,7 +260,7 @@ async def cards_top_callback(callback: types.CallbackQuery):
             message_text += f"{top_user[0]}. {top_user[1]} {top_user[2]}: {top_user[3]} очков\n"
         if user_rank and user_rank > 10:
             message_text += (f"\nВаше место: {user_rank} "
-                             f"({user.username}: {user.points} очков)")
+                             f"({user.nickname}: {user.points} очков)")
 
         markup = await top_kb(callback, "point")
 
